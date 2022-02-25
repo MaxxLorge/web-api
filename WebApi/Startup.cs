@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using WebApi.Models;
 
@@ -40,6 +41,7 @@ namespace WebApi
                 .AddNewtonsoftJson(opt =>
                 {
                     opt.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                    opt.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Populate;
                 });
             services.AddAutoMapper(cfg =>
             {
@@ -48,6 +50,7 @@ namespace WebApi
                     .ForMember(dest => dest.FullName,
                         opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}"));
                 cfg.CreateMap<UserToCreateDto, UserEntity>();
+                cfg.CreateMap<UserToUpdateDto, UserEntity>();
             }, new System.Reflection.Assembly[0]);
             services.AddSingleton<IUserRepository, InMemoryUserRepository>();
         }
