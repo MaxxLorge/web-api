@@ -176,13 +176,11 @@ namespace WebApi.Controllers
             
             var pageList = userRepository.GetPage(pageNumber, pageSize);
             var users = mapper.Map<IEnumerable<UserDto>>(pageList);
-            var previousPageNumber = pageNumber - 1;
-            var nextPageNumber = pageNumber + 1;
             var previousPage = pageList.HasPrevious
-                ? linkGenerator.GetUriByRouteValues(HttpContext, nameof(GetUsers), new {previousPageNumber, pageSize})
+                ? GeneratePageLink(pageNumber - 1, pageSize)
                 : null;
             var nextPage = pageList.HasNext
-                ? linkGenerator.GetUriByRouteValues(HttpContext, nameof(GetUsers), new {nextPageNumber, pageSize})
+                ? GeneratePageLink(pageNumber + 1, pageSize)
                 : null;
             
             var paginationHeader = new
@@ -208,6 +206,12 @@ namespace WebApi.Controllers
         {
             Response.Headers.Add("Allow", "GET, POST, OPTIONS");
             return Ok();
+        }
+
+        private string? GeneratePageLink(int pageNumber, int pageSize)
+        {
+            return linkGenerator
+                .GetUriByRouteValues(HttpContext, nameof(GetUsers), new {pageNumber, pageSize});
         }
     }
 }
