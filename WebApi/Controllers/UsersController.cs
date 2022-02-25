@@ -34,39 +34,21 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
+        [Produces("application/json")]
         [Consumes("application/json")]
         public IActionResult CreateUser([FromBody] UserToCreateDto user)
         {
-            // if (user == null)
-            //     return BadRequest();
-            // if (!ModelState.IsValid)
-            //     return UnprocessableEntity();
-            //
-            // var userEntity = mapper.Map<UserEntity>(user);
-            // var createdUserEntity = userRepository.Insert(userEntity);
-            //
-            // return CreatedAtRoute(
-            //     nameof(GetUserById),
-            //     new {userId = createdUserEntity.Id},
-            //     createdUserEntity.Id);
             if (user == null)
                 return BadRequest();
-
-            if (string.IsNullOrEmpty(user.Login) || !user.Login.All(char.IsLetterOrDigit))
-            {
-                ModelState.AddModelError(nameof(UserToCreateDto.Login),
-                    "Login should contain only letters or digits.");
-            }
-
             if (!ModelState.IsValid)
                 return UnprocessableEntity(ModelState);
-
+            
             var userEntity = mapper.Map<UserEntity>(user);
             var createdUserEntity = userRepository.Insert(userEntity);
-
+            
             return CreatedAtRoute(
                 nameof(GetUserById),
-                new { userId = createdUserEntity.Id },
+                new {userId = createdUserEntity.Id},
                 createdUserEntity.Id);
         }
     }

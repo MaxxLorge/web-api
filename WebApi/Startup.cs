@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json.Serialization;
 using WebApi.Models;
 
 namespace WebApi
@@ -35,6 +36,10 @@ namespace WebApi
                 .ConfigureApiBehaviorOptions(options => {
                     options.SuppressModelStateInvalidFilter = true;
                     options.SuppressMapClientErrors = true;
+                })
+                .AddNewtonsoftJson(opt =>
+                {
+                    opt.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
                 });
             services.AddAutoMapper(cfg =>
             {
